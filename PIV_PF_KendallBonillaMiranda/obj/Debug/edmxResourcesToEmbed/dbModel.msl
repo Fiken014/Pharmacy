@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="PIV_PF_KendallBonillaMirandaModelStoreContainer" CdmEntityContainer="PIV_PF_ProyectoFinalEntities">
+    <EntitySetMapping Name="Clientes">
+      <EntityTypeMapping TypeName="PIV_PF_KendallBonillaMirandaModel.Clientes">
+        <MappingFragment StoreEntitySet="Clientes">
+          <ScalarProperty Name="ClienteID" ColumnName="ClienteID" />
+          <ScalarProperty Name="PersonalID" ColumnName="PersonalID" />
+          <ScalarProperty Name="NombreCompleto" ColumnName="NombreCompleto" />
+          <ScalarProperty Name="Email" ColumnName="Email" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="DetallePedidos">
+      <EntityTypeMapping TypeName="PIV_PF_KendallBonillaMirandaModel.DetallePedidos">
+        <MappingFragment StoreEntitySet="DetallePedidos">
+          <ScalarProperty Name="DetallePedidoID" ColumnName="DetallePedidoID" />
+          <ScalarProperty Name="PedidoID" ColumnName="PedidoID" />
+          <ScalarProperty Name="ProductoID" ColumnName="ProductoID" />
+          <ScalarProperty Name="Cantidad" ColumnName="Cantidad" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Pedidos">
+      <EntityTypeMapping TypeName="PIV_PF_KendallBonillaMirandaModel.Pedidos">
+        <MappingFragment StoreEntitySet="Pedidos">
+          <ScalarProperty Name="PedidoID" ColumnName="PedidoID" />
+          <ScalarProperty Name="ClienteID" ColumnName="ClienteID" />
+          <ScalarProperty Name="FechaPedido" ColumnName="FechaPedido" />
+          <ScalarProperty Name="SubTotal" ColumnName="SubTotal" />
+          <ScalarProperty Name="Total" ColumnName="Total" />
+          <ScalarProperty Name="MetodoPago" ColumnName="MetodoPago" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Productos">
+      <EntityTypeMapping TypeName="PIV_PF_KendallBonillaMirandaModel.Productos">
+        <MappingFragment StoreEntitySet="Productos">
+          <ScalarProperty Name="ProductoID" ColumnName="ProductoID" />
+          <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+          <ScalarProperty Name="Descripcion" ColumnName="Descripcion" />
+          <ScalarProperty Name="Precio" ColumnName="Precio" />
+          <ScalarProperty Name="Stock" ColumnName="Stock" />
+          <ScalarProperty Name="Estado" ColumnName="Estado" />
+          <ScalarProperty Name="TipoID" ColumnName="TipoID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="TiposProductos">
+      <EntityTypeMapping TypeName="PIV_PF_KendallBonillaMirandaModel.TiposProductos">
+        <MappingFragment StoreEntitySet="TiposProductos">
+          <ScalarProperty Name="TipoID" ColumnName="TipoID" />
+          <ScalarProperty Name="TipoNombre" ColumnName="TipoNombre" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Usuarios">
+      <EntityTypeMapping TypeName="PIV_PF_KendallBonillaMirandaModel.Usuarios">
+        <MappingFragment StoreEntitySet="Usuarios">
+          <ScalarProperty Name="UsuarioID" ColumnName="UsuarioID" />
+          <ScalarProperty Name="PersonalID" ColumnName="PersonalID" />
+          <ScalarProperty Name="NombreCompleto" ColumnName="NombreCompleto" />
+          <ScalarProperty Name="Email" ColumnName="Email" />
+          <ScalarProperty Name="Contrasena" ColumnName="Contrasena" />
+          <ScalarProperty Name="TipoUsuario" ColumnName="TipoUsuario" />
+          <ScalarProperty Name="Estado" ColumnName="Estado" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping>

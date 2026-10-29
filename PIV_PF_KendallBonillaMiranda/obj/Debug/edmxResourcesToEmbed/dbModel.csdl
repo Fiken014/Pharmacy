@@ -1,0 +1,143 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="PIV_PF_KendallBonillaMirandaModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="Clientes">
+    <Key>
+      <PropertyRef Name="ClienteID" />
+    </Key>
+    <Property Name="ClienteID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="PersonalID" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="NombreCompleto" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="Email" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+    <NavigationProperty Name="Pedidos" Relationship="Self.FK__Pedidos__Cliente__4316F928" FromRole="Clientes" ToRole="Pedidos" />
+  </EntityType>
+  <EntityType Name="DetallePedidos">
+    <Key>
+      <PropertyRef Name="DetallePedidoID" />
+    </Key>
+    <Property Name="DetallePedidoID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="PedidoID" Type="Int32" Nullable="false" />
+    <Property Name="ProductoID" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="Cantidad" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="Pedidos" Relationship="Self.FK__DetallePe__Pedid__412EB0B6" FromRole="DetallePedidos" ToRole="Pedidos" />
+    <NavigationProperty Name="Productos" Relationship="Self.FK__DetallePe__Produ__4222D4EF" FromRole="DetallePedidos" ToRole="Productos" />
+  </EntityType>
+  <EntityType Name="Pedidos">
+    <Key>
+      <PropertyRef Name="PedidoID" />
+    </Key>
+    <Property Name="PedidoID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="ClienteID" Type="Int32" Nullable="false" />
+    <Property Name="FechaPedido" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="SubTotal" Type="Decimal" Precision="10" Scale="2" Nullable="false" />
+    <Property Name="Total" Type="Decimal" Precision="10" Scale="2" Nullable="false" />
+    <Property Name="MetodoPago" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+    <NavigationProperty Name="Clientes" Relationship="Self.FK__Pedidos__Cliente__4316F928" FromRole="Pedidos" ToRole="Clientes" />
+    <NavigationProperty Name="DetallePedidos" Relationship="Self.FK__DetallePe__Pedid__412EB0B6" FromRole="Pedidos" ToRole="DetallePedidos" />
+  </EntityType>
+  <EntityType Name="Productos">
+    <Key>
+      <PropertyRef Name="ProductoID" />
+    </Key>
+    <Property Name="ProductoID" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="Nombre" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="Descripcion" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="Precio" Type="Decimal" Precision="10" Scale="2" Nullable="false" />
+    <Property Name="Stock" Type="Int32" Nullable="false" />
+    <Property Name="Estado" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="TipoID" Type="Int32" />
+    <NavigationProperty Name="DetallePedidos" Relationship="Self.FK__DetallePe__Produ__4222D4EF" FromRole="Productos" ToRole="DetallePedidos" />
+    <NavigationProperty Name="TiposProductos" Relationship="Self.FK_Productos_TiposProductos" FromRole="Productos" ToRole="TiposProductos" />
+  </EntityType>
+  <EntityType Name="TiposProductos">
+    <Key>
+      <PropertyRef Name="TipoID" />
+    </Key>
+    <Property Name="TipoID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="TipoNombre" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <NavigationProperty Name="Productos" Relationship="Self.FK_Productos_TiposProductos" FromRole="TiposProductos" ToRole="Productos" />
+  </EntityType>
+  <EntityType Name="Usuarios">
+    <Key>
+      <PropertyRef Name="UsuarioID" />
+    </Key>
+    <Property Name="UsuarioID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="PersonalID" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="NombreCompleto" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="Email" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="Contrasena" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="TipoUsuario" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="Estado" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+  </EntityType>
+  <Association Name="FK__Pedidos__Cliente__4316F928">
+    <End Role="Clientes" Type="Self.Clientes" Multiplicity="1" />
+    <End Role="Pedidos" Type="Self.Pedidos" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Clientes">
+        <PropertyRef Name="ClienteID" />
+      </Principal>
+      <Dependent Role="Pedidos">
+        <PropertyRef Name="ClienteID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__DetallePe__Pedid__412EB0B6">
+    <End Role="Pedidos" Type="Self.Pedidos" Multiplicity="1" />
+    <End Role="DetallePedidos" Type="Self.DetallePedidos" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Pedidos">
+        <PropertyRef Name="PedidoID" />
+      </Principal>
+      <Dependent Role="DetallePedidos">
+        <PropertyRef Name="PedidoID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__DetallePe__Produ__4222D4EF">
+    <End Role="Productos" Type="Self.Productos" Multiplicity="1" />
+    <End Role="DetallePedidos" Type="Self.DetallePedidos" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Productos">
+        <PropertyRef Name="ProductoID" />
+      </Principal>
+      <Dependent Role="DetallePedidos">
+        <PropertyRef Name="ProductoID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Productos_TiposProductos">
+    <End Role="TiposProductos" Type="Self.TiposProductos" Multiplicity="0..1" />
+    <End Role="Productos" Type="Self.Productos" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="TiposProductos">
+        <PropertyRef Name="TipoID" />
+      </Principal>
+      <Dependent Role="Productos">
+        <PropertyRef Name="TipoID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="PIV_PF_ProyectoFinalEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Clientes" EntityType="Self.Clientes" />
+    <EntitySet Name="DetallePedidos" EntityType="Self.DetallePedidos" />
+    <EntitySet Name="Pedidos" EntityType="Self.Pedidos" />
+    <EntitySet Name="Productos" EntityType="Self.Productos" />
+    <EntitySet Name="TiposProductos" EntityType="Self.TiposProductos" />
+    <EntitySet Name="Usuarios" EntityType="Self.Usuarios" />
+    <AssociationSet Name="FK__Pedidos__Cliente__4316F928" Association="Self.FK__Pedidos__Cliente__4316F928">
+      <End Role="Clientes" EntitySet="Clientes" />
+      <End Role="Pedidos" EntitySet="Pedidos" />
+    </AssociationSet>
+    <AssociationSet Name="FK__DetallePe__Pedid__412EB0B6" Association="Self.FK__DetallePe__Pedid__412EB0B6">
+      <End Role="Pedidos" EntitySet="Pedidos" />
+      <End Role="DetallePedidos" EntitySet="DetallePedidos" />
+    </AssociationSet>
+    <AssociationSet Name="FK__DetallePe__Produ__4222D4EF" Association="Self.FK__DetallePe__Produ__4222D4EF">
+      <End Role="Productos" EntitySet="Productos" />
+      <End Role="DetallePedidos" EntitySet="DetallePedidos" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Productos_TiposProductos" Association="Self.FK_Productos_TiposProductos">
+      <End Role="TiposProductos" EntitySet="TiposProductos" />
+      <End Role="Productos" EntitySet="Productos" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>
