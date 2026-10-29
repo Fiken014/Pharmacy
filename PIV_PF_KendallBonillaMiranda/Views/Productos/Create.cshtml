@@ -1,0 +1,124 @@
+﻿@model PIV_PF_KendallBonillaMiranda.Productos
+
+@{
+    ViewBag.Title = "Crear Producto";
+}
+
+<h2>Crear Producto</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Productos</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ProductoID, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.ProductoID, new { htmlAttributes = new { @class = "form-control", @onkeyup = "this.value = this.value.toUpperCase(); checkFields()" } })
+                @Html.ValidationMessageFor(model => model.ProductoID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Nombre, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Nombre, new { htmlAttributes = new { @class = "form-control", @onkeyup = "checkFields()" } })
+                @Html.ValidationMessageFor(model => model.Nombre, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Descripcion, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Descripcion, new { htmlAttributes = new { @class = "form-control", @onkeyup = "checkFields()" } })
+                @Html.ValidationMessageFor(model => model.Descripcion, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Precio, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Precio, new { htmlAttributes = new { @class = "form-control", @onkeyup = "checkFields()", @min = "0" } })
+                @Html.ValidationMessageFor(model => model.Precio, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Stock, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Stock, new { htmlAttributes = new { @class = "form-control", @onkeyup = "checkFields()", @type = "number", @min = "1" } })
+                @Html.ValidationMessageFor(model => model.Stock, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Estado, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.Estado, new SelectList(new List<SelectListItem>
+                {
+                    new SelectListItem { Text = "Disponible", Value = "Disponible" },
+                    new SelectListItem { Text = "Agotado", Value = "Agotado" }
+                }, "Value", "Text"), htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Estado, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.TipoID, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.TipoID, ViewBag.TiposProductos as SelectList, "-- Seleccione un tipo de producto --", new { @class = "form-control", @onchange = "checkFields()" })
+                @Html.ValidationMessageFor(model => model.TipoID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Crear" class="btn btn-default" id="createButton" disabled />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Volver a la Lista", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
+<script>
+    function checkFields() {
+        var productoID = document.getElementById("ProductoID").value;
+        var nombre = document.getElementById("Nombre").value;
+        var descripcion = document.getElementById("Descripcion").value;
+        var precio = document.getElementById("Precio").value;
+        var stock = document.getElementById("Stock").value;
+        var tipoID = document.getElementById("TipoID").value;
+        var createButton = document.getElementById("createButton");
+
+        // Remove any non-numeric characters from price and convert to float
+        precio = parseFloat(precio.replace(/[^0-9\.]/g, ''));
+
+        // Remove any non-numeric characters from stock and convert to integer
+        stock = parseInt(stock.replace(/[^0-9]/g, ''));
+
+        // Check that price and stock are greater than 0 or 1 and have decimal places
+        if (precio > 0 && stock >= 1 && !isNaN(precio) && !isNaN(stock) && tipoID !== "" && productoID !== "" && nombre !== "" && descripcion !== "") {
+            createButton.disabled = false;
+        } else {
+            createButton.disabled = true;
+        }
+    }
+
+    document.getElementById("ProductoID").addEventListener("input", checkFields);
+    document.getElementById("Nombre").addEventListener("input", checkFields);
+    document.getElementById("Descripcion").addEventListener("input", checkFields);
+    document.getElementById("Precio").addEventListener("input", checkFields);
+    document.getElementById("Stock").addEventListener("input", checkFields);
+    document.getElementById("TipoID").addEventListener("change", checkFields);
+</script>

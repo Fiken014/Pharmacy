@@ -1,0 +1,57 @@
+﻿@model PIV_PF_KendallBonillaMiranda.DetallePedidos
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Delete</title>
+</head>
+<body>
+    <h3>¿Estás seguro de que quieres eliminar esto?</h3>
+    <div>
+        <h4>Detalle del Pedido</h4>
+        <hr />
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.Cantidad)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Cantidad)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Pedidos.MetodoPago)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Pedidos.MetodoPago)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Productos.Nombre)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Productos.Nombre)
+            </dd>
+
+        </dl>
+
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-actions no-color">
+                <input type="submit" value="Eliminar" class="btn btn-danger" /> |
+                @Html.ActionLink("Volver a la Lista", "Index")
+            </div>
+        }
+    </div>
+</body>
+</html>

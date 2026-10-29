@@ -1,0 +1,112 @@
+﻿@model PIV_PF_KendallBonillaMiranda.Usuarios
+
+@{
+    ViewBag.Title = "Editar";
+}
+
+<h2>Editar</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Usuario</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.UsuarioID)
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.PersonalID, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.PersonalID, new { htmlAttributes = new { @class = "form-control", @onkeyup = "checkFields()", @readonly = "readonly" } })
+                @Html.ValidationMessageFor(model => model.PersonalID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.NombreCompleto, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.NombreCompleto, new { htmlAttributes = new { @class = "form-control", @onkeyup = "checkFields()" } })
+                @Html.ValidationMessageFor(model => model.NombreCompleto, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control", @onkeyup = "checkFields()" } })
+                @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Contrasena, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Contrasena, new { htmlAttributes = new { @class = "form-control", @onkeyup = "checkFields()" } })
+                @Html.ValidationMessageFor(model => model.Contrasena, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.TipoUsuario, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.TipoUsuario, new SelectList(new List<SelectListItem>
+                    {
+                        new SelectListItem { Text = "Administrador", Value = "Administrador" },
+                        new SelectListItem { Text = "Empleado", Value = "Empleado" },
+                        new SelectListItem { Text = "Contabilidad", Value = "Contabilidad" }
+                    }, "Value", "Text"), htmlAttributes: new { @class = "form-control", @onchange = "checkFields()" })
+                @Html.ValidationMessageFor(model => model.TipoUsuario, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Estado, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.Estado, new SelectList(new List<SelectListItem>
+                    {
+                        new SelectListItem { Text = "Activo", Value = "Activo" },
+                        new SelectListItem { Text = "Inactivo", Value = "Inactivo" }
+                    }, "Value", "Text"), htmlAttributes: new { @class = "form-control", @onchange = "checkFields()" })
+                @Html.ValidationMessageFor(model => model.Estado, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Guardar" class="btn btn-default" id="saveButton" disabled />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Volver a la lista", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
+<script>
+    function checkFields() {
+        var contrasena = document.getElementById("Contrasena").value;
+        var nombreCompleto = document.getElementById("NombreCompleto").value;
+        var email = document.getElementById("Email").value;
+        var estado = document.getElementById("Estado").value;
+        var tipoUsuario = document.getElementById("TipoUsuario").value;
+        var saveButton = document.getElementById("saveButton");
+
+        if (contrasena.trim() == "" || nombreCompleto.trim() == "" || email.trim() == "" || estado.trim() == "" || tipoUsuario.trim() == "") {
+            saveButton.disabled = true;
+        } else {
+            saveButton.disabled = false;
+        }
+    }
+    document.getElementById("Contrasena").addEventListener("input", checkFields);
+    document.getElementById("NombreCompleto").addEventListener("input", checkFields);
+    document.getElementById("Email").addEventListener("input", checkFields);
+    document.getElementById("Estado").addEventListener("change", checkFields);
+    document.getElementById("TipoUsuario").addEventListener("change", checkFields);
+</script>

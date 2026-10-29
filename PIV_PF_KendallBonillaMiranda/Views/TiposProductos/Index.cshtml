@@ -1,0 +1,64 @@
+﻿@model IEnumerable<PIV_PF_KendallBonillaMiranda.TiposProductos>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<head>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link href="~/Content/bootstrap.css" rel="stylesheet" /> <!-- Asegúrate de que los estilos de Bootstrap estén incluidos -->
+</head>
+
+<h2>Tipos de Productos</h2>
+
+<p>
+    @Html.ActionLink("Crear un nuevo tipo Producto", "Create", null, new { @class = "btn btn-primary" })
+</p>
+
+<div class="form-group">
+    <input type="text" class="form-control" id="search" placeholder="Buscar por nombre" />
+</div>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.First().TipoID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.First().TipoNombre)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+
+    <tbody id="products-table">
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TipoID)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TipoNombre)
+                </td>
+                <td>
+                    @Html.ActionLink("Editar", "Edit", new { id = item.TipoID }, new { @class = "btn btn-warning" }) |
+                    @Html.ActionLink("Detalle", "Details", new { id = item.TipoID }, new { @class = "btn btn-info" }) |
+                    @Html.ActionLink("Eliminar", "Delete", new { id = item.TipoID }, new { @class = "btn btn-danger" })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<script>
+    $(document).ready(function () {
+        $("#search").on("keyup", function () {
+            var searchText = $(this).val().toLowerCase();
+            $("#products-table tr").filter(function () {
+                $(this).toggle($(this).find('td:eq(1)').text().toLowerCase().indexOf(searchText) > -1);
+            });
+        });
+    });
+</script>

@@ -1,0 +1,133 @@
+﻿@model PIV_PF_KendallBonillaMiranda.Pedidos
+
+@{
+    ViewBag.Title = "Detalles del Pedido";
+}
+
+<head>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+
+<h2>Detalles del Pedido</h2>
+
+<div>
+    <h4>Pedido</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.PedidoID)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PedidoID)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.FechaPedido)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.FechaPedido)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Clientes.NombreCompleto)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Clientes.NombreCompleto)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.SubTotal)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.SubTotal)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Total)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Total)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.MetodoPago)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.MetodoPago)
+        </dd>
+    </dl>
+</div>
+
+<div>
+    <h4>Detalles del Pedido</h4>
+    <hr />
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    ID Detalle
+                </th>
+                <th>
+                    Producto
+                </th>
+                <th>
+                    Cantidad
+                </th>
+                <th>
+                    Precio Unitario
+                </th>
+                <th>
+                    Subtotal
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.DetallePedidos)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DetallePedidoID)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Productos.Nombre)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Cantidad)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Productos.Precio)
+                    </td>
+                    <td>
+                        @(item.Cantidad * item.Productos.Precio)
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<p>
+    <strong>Subtotal:</strong> @Model.SubTotal
+</p>
+<p>
+    <strong>Impuesto IVA 13%:</strong> @(Model.SubTotal * 0.13m)
+</p>
+@if (Model.MetodoPago == "Tarjeta")
+{
+    <p>
+        <strong>Tarifa de Procesamiento de Tarjeta 2%:</strong> @(Model.SubTotal * 0.02m)
+    </p>
+}
+<p>
+    <strong>Total:</strong> @Model.Total
+</p>
+
+<p>
+    @Html.ActionLink("Volver a la Lista", "Index")
+</p>

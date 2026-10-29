@@ -1,0 +1,65 @@
+﻿@model PIV_PF_KendallBonillaMiranda.Pedidos
+
+@{
+    ViewBag.Title = "Eliminar Pedido";
+}
+
+<h2>Eliminar Pedido</h2>
+
+<h3>¿Estás seguro de que deseas eliminar este pedido?</h3>
+<div>
+    <h4>Pedido</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.FechaPedido)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.FechaPedido)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.SubTotal)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.SubTotal)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Total)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Total)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.MetodoPago)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.MetodoPago)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Clientes.PersonalID)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Clientes.PersonalID)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Eliminar" class="btn btn-danger" /> |
+            @Html.ActionLink("Volver a la Lista", "Index", null, new { @class = "btn btn-default" })
+        </div>
+    }
+</div>

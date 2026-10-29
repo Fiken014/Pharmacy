@@ -1,0 +1,79 @@
+﻿@model PIV_PF_KendallBonillaMiranda.Clientes
+
+@{
+    ViewBag.Title = "Create";
+}
+
+<h2>Crear</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Cliente</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.PersonalID, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.PersonalID, new { htmlAttributes = new { @class = "form-control", @onkeyup = "checkFields()" } })
+                @Html.ValidationMessageFor(model => model.PersonalID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.NombreCompleto, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.NombreCompleto, new { htmlAttributes = new { @class = "form-control", @onkeyup = "checkFields()" } })
+                @Html.ValidationMessageFor(model => model.NombreCompleto, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control", @onkeyup = "checkFields()" } })
+                @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-default" id="createButton" disabled />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Regresar a la lista", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
+<script>
+    function checkFields() {
+        var personalID = document.getElementById("PersonalID").value;
+        var fullName = document.getElementById("NombreCompleto").value;
+        var email = document.getElementById("Email").value;
+        var createButton = document.getElementById("createButton");
+
+        // Remove any non-numeric characters from personalID
+        personalID = personalID.replace(/[^0-9]/g, '');
+
+        // Update the value of the PersonalID field
+        document.getElementById("PersonalID").value = personalID;
+
+        if (personalID.trim() == "" || fullName.trim() == "" || email.trim() == "") {
+            createButton.disabled = true;
+        } else {
+            createButton.disabled = false;
+        }
+    }
+    document.getElementById("PersonalID").addEventListener("input", checkFields);
+    document.getElementById("NombreCompleto").addEventListener("input", checkFields);
+    document.getElementById("Email").addEventListener("input", checkFields);
+</script>

@@ -1,0 +1,72 @@
+﻿@model PIV_PF_KendallBonillaMiranda.TiposProductos
+
+@{
+    ViewBag.Title = "Edit";
+}
+
+<h2>Edit</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Tipos Productos</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.TipoID)
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.TipoID, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.TipoID, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                @Html.ValidationMessageFor(model => model.TipoID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.TipoNombre, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.TipoNombre, new { @class = "form-control", @onkeyup = "convertToProperCase(this); checkFields()" })
+                @Html.ValidationMessageFor(model => model.TipoNombre, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" id="saveButton" disabled />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
+<script>
+    function checkFields() {
+        var typename = document.getElementById("TipoNombre").value;
+        var saveButton = document.getElementById("saveButton");
+
+        if (typename.trim() == "") {
+            saveButton.disabled = true;
+        } else {
+            saveButton.disabled = false;
+        }
+    }
+
+    function convertToProperCase(input) {
+        var text = input.value.toLowerCase();
+        var properCaseText = text.replace(/\b\w/g, function (char) {
+            return char.toUpperCase();
+        });
+        input.value = properCaseText;
+    }
+
+    document.getElementById("TipoNombre").addEventListener("input", checkFields);
+</script>

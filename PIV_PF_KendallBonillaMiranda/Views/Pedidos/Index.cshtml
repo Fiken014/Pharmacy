@@ -1,0 +1,87 @@
+﻿@model IEnumerable<PIV_PF_KendallBonillaMiranda.Pedidos>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<head>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+
+<h2>Lista de Pedidos</h2>
+
+<p>
+    @Html.ActionLink("Crear Nuevo Pedido", "Create", null, new { @class = "btn btn-primary" })
+</p>
+
+<div class="form-group">
+    <input type="text" class="form-control" id="search" placeholder="Buscar por nombre de Cliente">
+</div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.PedidoID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FechaPedido)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Clientes.NombreCompleto)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SubTotal)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Total)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MetodoPago)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+
+    <tbody id="orders-table">
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PedidoID)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FechaPedido)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Clientes.NombreCompleto)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SubTotal)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Total)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.MetodoPago)
+                </td>
+                <td>
+                    @Html.ActionLink("Detalles", "Details", new { id = item.PedidoID }, new { @class = "btn btn-info" }) |
+                    @Html.ActionLink("Eliminar", "Delete", new { id = item.PedidoID }, new { @class = "btn btn-danger" })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<script>
+    $(document).ready(function () {
+        $("#search").on("keyup", function () {
+            var searchText = $(this).val().toLowerCase();
+            $("#orders-table tr").filter(function () {
+                var text = $(this).find('td:eq(2)').text().toLowerCase();
+                $(this).toggle(text.indexOf(searchText) > -1);
+            });
+        });
+    });
+</script>

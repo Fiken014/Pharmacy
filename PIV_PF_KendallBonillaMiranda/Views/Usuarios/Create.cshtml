@@ -1,0 +1,111 @@
+﻿@model PIV_PF_KendallBonillaMiranda.Usuarios
+
+@{
+    ViewBag.Title = "Crear";
+}
+
+<h2>Crear</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Usuario</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.PersonalID, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.PersonalID, new { htmlAttributes = new { @class = "form-control", @onkeyup = "checkFields()" } })
+                @Html.ValidationMessageFor(model => model.PersonalID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.NombreCompleto, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.NombreCompleto, new { htmlAttributes = new { @class = "form-control", @onkeyup = "checkFields()" } })
+                @Html.ValidationMessageFor(model => model.NombreCompleto, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control", @onkeyup = "checkFields()" } })
+                @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Contrasena, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Contrasena, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                @Html.ValidationMessageFor(model => model.Contrasena, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.TipoUsuario, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.TipoUsuario, new SelectList(new List<SelectListItem>
+                    {
+                        new SelectListItem { Text = "Administrador", Value = "Administrador" },
+                        new SelectListItem { Text = "Empleado", Value = "Empleado" },
+                        new SelectListItem { Text = "Contabilidad", Value = "Contabilidad" }
+                    }, "Value", "Text"), htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.TipoUsuario, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Estado, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Estado, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly", @value = "Activo" } })
+                @Html.ValidationMessageFor(model => model.Estado, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Crear" class="btn btn-default" id="createButton" disabled />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Volver a la lista", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
+<script>
+    function checkFields() {
+        var personalID = document.getElementById("PersonalID").value;
+        var nombreCompleto = document.getElementById("NombreCompleto").value;
+        var email = document.getElementById("Email").value;
+        var createButton = document.getElementById("createButton");
+
+        // Eliminar caracteres no numéricos de personalID
+        personalID = personalID.replace(/[^0-9]/g, '');
+
+        // Actualizar el valor del campo PersonalID
+        document.getElementById("PersonalID").value = personalID;
+
+        if (personalID.trim() == "" || nombreCompleto.trim() == "" || email.trim() == "") {
+            createButton.disabled = true;
+        } else {
+            createButton.disabled = false;
+        }
+    }
+    document.getElementById("PersonalID").addEventListener("input", checkFields);
+    document.getElementById("NombreCompleto").addEventListener("input", checkFields);
+    document.getElementById("Email").addEventListener("input", checkFields);
+</script>
+
+

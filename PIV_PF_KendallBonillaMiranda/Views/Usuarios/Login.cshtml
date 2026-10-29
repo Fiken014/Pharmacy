@@ -1,0 +1,59 @@
+﻿@model PIV_PF_KendallBonillaMiranda.Usuarios
+
+@{
+    ViewBag.Title = "Inicio de sesión";
+}
+
+<style>
+    .logo-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 20px;
+    }
+
+        .logo-container img {
+            max-width: 200px;
+        }
+
+    .pharmacy-logo {
+        width: 500px;
+        height: 150px;
+    }
+</style>
+
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger">
+        @Html.ValidationSummary()
+    </div>
+}
+
+<div class="logo-container">
+    <img src="@Url.Content("~/Content/Images/pharmacy.png")" alt="Farmacia" class="pharmacy-logo">
+</div>
+
+<h2>Inicio de sesión</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label" })
+        @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control", placeholder = "Ingresa tu correo electrónico" } })
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Contrasena, htmlAttributes: new { @class = "control-label" })
+        @Html.PasswordFor(model => model.Contrasena, new { htmlAttributes = new { @class = "form-control", placeholder = "Ingresa tu contraseña" } })
+    </div>
+
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Iniciar sesión</button>
+    </div>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

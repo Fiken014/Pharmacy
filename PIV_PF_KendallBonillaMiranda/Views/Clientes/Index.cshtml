@@ -1,0 +1,70 @@
+﻿@model IEnumerable<PIV_PF_KendallBonillaMiranda.Clientes>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<head>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Crear nuevo cliente", "Create", null, new { @class = "btn btn-primary" })
+</p>
+
+<div class="form-group">
+    <input type="text" class="form-control" id="search" placeholder="Buscar por nombre completo del cliente">
+</div>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.PersonalID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.NombreCompleto)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Email)
+            </th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+
+    <tbody id="customers-table">
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PersonalID)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NombreCompleto)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                <td>
+                    @Html.ActionLink("Editar", "Edit", new { id = item.ClienteID }, new { @class = "btn btn-warning btn-sm" }) |
+                    @Html.ActionLink("Detalles", "Details", new { id = item.ClienteID }, new { @class = "btn btn-info btn-sm" }) |
+                    @Html.ActionLink("Eliminar", "Delete", new { id = item.ClienteID }, new { @class = "btn btn-danger btn-sm" })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<script>
+    $(document).ready(function () {
+        $("#search").on("keyup", function () {
+            var searchText = $(this).val().toLowerCase();
+            $("#customers-table tr").filter(function () {
+                var text = $(this).find('td:eq(1)').text().toLowerCase();
+                $(this).toggle(text.indexOf(searchText) > -1);
+            });
+        });
+    });
+</script>

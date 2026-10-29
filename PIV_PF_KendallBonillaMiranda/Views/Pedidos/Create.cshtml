@@ -1,0 +1,363 @@
+﻿@model PIV_PF_KendallBonillaMiranda.Pedidos
+@using Newtonsoft.Json;
+
+@{
+    ViewBag.Title = "Crear Pedido";
+}
+
+<head>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+</head>
+
+<h2>Crear Pedido</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Pedido</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <!-- Campo Cliente -->
+        <div class="form-group">
+            @Html.LabelFor(model => model.ClienteID, "Cliente", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-8">
+                @Html.DropDownListFor(model => model.ClienteID, (IEnumerable<SelectListItem>)ViewBag.Clientes, "-- Seleccione un cliente --", htmlAttributes: new { @class = "form-control", @onchange = "checkFields()" })
+                @Html.ValidationMessageFor(model => model.ClienteID, "", new { @class = "text-danger" })
+            </div>
+            <div class="col-md-2">
+                @if (Session["UserType"] != null && (Session["UserType"].ToString() == "Administrador" || Session["UserType"].ToString() == "Empleado"))
+                {
+                    <button type="button" class="btn btn-default" onclick="createCustomer()">Crear Cliente</button>
+                }
+            </div>
+        </div>
+
+        <!-- Campo Fecha de Pedido -->
+        <div class="form-group">
+            @Html.LabelFor(model => model.FechaPedido, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.FechaPedido, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly", @Value = DateTime.Now.ToString("yyyy-MM-dd") } })
+                @Html.ValidationMessageFor(model => model.FechaPedido, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <!-- Campo Método de Pago -->
+        <div class="form-group">
+            @Html.LabelFor(model => model.MetodoPago, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.MetodoPago, new SelectList(new List<SelectListItem>
+                    {
+                        new SelectListItem { Text = "Tarjeta", Value = "Tarjeta" },
+                        new SelectListItem { Text = "Efectivo", Value = "Efectivo" },
+                        new SelectListItem { Text = "Sinpe", Value = "Sinpe" }
+                    }, "Value", "Text"), htmlAttributes: new { @class = "form-control", @onchange = "updateAmounts()" })
+                @Html.ValidationMessageFor(model => model.MetodoPago, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <hr>
+
+        <!-- Campo Producto -->
+        <div class="form-group">
+            @Html.Label("Producto", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-8">
+                @if (ViewBag.Productos != null)
+                {
+                    @Html.DropDownList("ProductoID", ViewBag.Productos as SelectList, "-- Seleccione un producto --", new { @class = "form-control product-dropdown", @onchange = "checkFields()" })
+                }
+                else
+                {
+                    <p>Error: No se pudo obtener la lista de productos.</p>
+                }
+            </div>
+        </div>
+
+        <!-- Input de Cantidad -->
+        <div id="quantity-input-container" class="form-group">
+            <div class="col-md-8 col-md-offset-2">
+                <input type="number" id="quantity-input" class="form-control" min="1" value="1" />
+                <div class="text-danger" id="quantity-input-error"></div>
+                <button id="quantity-input-cancel" type="button" class="btn btn-default">Cancelar</button>
+                <button id="quantity-input-ok" type="button" class="btn btn-primary">Aceptar</button>
+            </div>
+        </div>
+
+        <!-- Tabla de Productos Seleccionados -->
+        <table id="product-table" class="table">
+            <thead>
+                <tr>
+                    <th>ID Producto</th>
+                    <th>Nombre</th>
+                    <th>Cantidad</th>
+                    <th>Precio</th>
+                    <th>Total</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+            <tfoot>
+                <tr>
+                    @Html.HiddenFor(model => model.SubTotal, new { id = "subtotal-amount-input", name = "pedido.SubTotal" })
+                    <td colspan="5"><strong>Subtotal:</strong></td>
+                    <td id="subtotal-amount">0</td>
+                </tr>
+                <tr>
+                    <td colspan="5"><strong>Impuesto IVA 13%:</strong></td>
+                    <td id="tax-amount">0</td>
+                </tr>
+                <tr>
+                    <td colspan="5"><strong>Cargo por Tarjeta 2%:</strong></td>
+                    <td id="card-amount">0</td>
+                </tr>
+                <tr>
+                    @Html.HiddenFor(model => model.Total, new { id = "total-amount-input", name = "pedido.Total" })
+                    <td colspan="5"><strong>Total:</strong></td>
+                    <td id="total-amount">0</td>
+                </tr>
+            </tfoot>
+        </table>
+
+        <hr>
+
+        <!-- Botón Crear -->
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <button id="create-btn" type="button" class="btn btn-default" disabled>Crear</button>
+            </div>
+        </div>
+
+        <hr>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Volver a la Lista", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script>
+        $(document).ready(function () {
+            // Inicializar las funciones de validación y cálculo al cargar la página
+            checkFields();
+            updateAmounts();
+
+            // Verificar cambios en el Cliente
+            $("#ClienteID").change(function () {
+                checkFields();
+            });
+
+            // Verificar cambios en la tabla de productos para actualizar los montos
+            const observer = new MutationObserver(function (mutationsList, observer) {
+                observer.disconnect();  // Desconectar el observador temporalmente
+                checkFields();
+                updateAmounts();
+                observer.observe(document.getElementById('product-table'), { childList: true, subtree: true }); // Reconectar el observador
+            });
+
+            // Configurar el observer para observar cambios en los hijos del nodo product-table
+            observer.observe(document.getElementById('product-table'), { childList: true, subtree: true });
+
+            // Verificar cambios en el método de pago
+            $("#MetodoPago").change(function () {
+                updateAmounts();
+            });
+
+            // Manejo del Contenedor de Cantidad
+            $("#quantity-input-container").hide();
+            $(".product-dropdown").change(function () {
+                var selectedProduct = $(this).val();
+                if (selectedProduct !== "-- Seleccione un producto --") {
+                    $("#quantity-input").val(1);
+                    $("#quantity-input-container").show();
+                } else {
+                    $("#quantity-input-container").hide();
+                }
+            });
+
+            // Confirmar selección de cantidad
+            $("#quantity-input-ok").click(function () {
+                var quantity = $("#quantity-input").val();
+                if (!isNaN(quantity) && parseInt(quantity) >= 1) {
+                    var product = $(".product-dropdown option:selected").text();
+                    var selectedProduct = $(".product-dropdown").val();
+                    if (selectedProduct) {
+                        getProductStock(selectedProduct, function (stock) {
+                            if (stock >= quantity) {
+                                getProductPrice(selectedProduct, function (price) {
+                                    if (price) {
+                                        var existingRow = $("#product-table tbody tr:contains('" + product + "')");
+                                        if (existingRow.length < 1) {
+                                            var totalprice = price * quantity;
+                                            $("#product-table tbody").append("<tr><td>" + selectedProduct + "</td><td>" + product + "</td><td>" + quantity + "</td><td>" + price + "</td><td>" + totalprice.toFixed(2) + "</td><td><button class='delete-row'>Eliminar</button></td></tr>");
+                                            updateAmounts();
+                                        } else {
+                                            var existingQuantity = parseInt(existingRow.find("td:eq(2)").text());
+                                            var totalQuantity = existingQuantity + parseInt(quantity);
+                                            if (totalQuantity <= stock) {
+                                                existingRow.find("td:eq(2)").text(totalQuantity);
+                                                var newTotalPrice = price * totalQuantity;
+                                                existingRow.find("td:eq(4)").text((newTotalPrice).toFixed(2));
+                                                updateAmounts();
+                                            } else {
+                                                $("#quantity-input-error").text("La cantidad excede el stock disponible (Stock: " + stock + ").");
+                                            }
+                                        }
+                                    } else {
+                                        $("#quantity-input-error").text("No se pudo obtener el precio.");
+                                    }
+                                });
+                            } else {
+                                $("#quantity-input-error").text("La cantidad excede el stock disponible (Stock: " + stock + ").");
+                            }
+                        });
+                    }
+                }
+            });
+
+            // Eliminar productos de la tabla
+            $(document).on("click", ".delete-row", function () {
+                $(this).closest("tr").remove();
+                updateAmounts();
+            });
+
+            // Manejo del evento de creación
+            $("#create-btn").click(function () {
+                var selectedProducts = [];
+                $("#product-table tbody tr").each(function () {
+                    var productId = $(this).find("td:eq(0)").text();
+                    var quantity = $(this).find("td:eq(2)").text();
+                    selectedProducts.push({
+                        ProductoID: productId,
+                        Cantidad: quantity
+                    });
+                });
+
+                var pedido = {
+                    ClienteID: $("#ClienteID").val(),
+                    FechaPedido: $("#FechaPedido").val(),
+                    MetodoPago: $("#MetodoPago").val(),
+                    SubTotal: parseFloat($("#subtotal-amount-input").val()),
+                    Total: parseFloat($("#total-amount-input").val())
+                };
+
+                // Debug: Verificar los valores antes de enviar
+                console.log("Datos de Pedido:", pedido);
+                console.log("Productos seleccionados:", selectedProducts);
+
+                var token = $('input[name="__RequestVerificationToken"]').val();
+
+                $.ajax({
+                    type: "POST",
+                    url: "/Pedidos/Create",
+                    data: {
+                        pedido: pedido,
+                        selectedProducts: selectedProducts,
+                        __RequestVerificationToken: token
+                    },
+                    success: function () {
+                        alert("Pedido creado exitosamente.");
+                        window.location.href = "/Pedidos/Index";
+                    },
+                    error: function (error) {
+                        console.error("Error al crear el pedido:", error);
+                        alert("Ocurrió un error al crear el pedido. Por favor, inténtalo nuevamente.");
+                    }
+                });
+            });
+        });
+
+        function checkFields() {
+            console.log("checkFields() llamada");
+            var totalAmount = parseFloat($("#total-amount").text());
+            var clienteID = $("#ClienteID").val();
+            if (totalAmount > 0 && clienteID !== "") {
+                $("#create-btn").prop("disabled", false);
+            } else {
+                $("#create-btn").prop("disabled", true);
+            }
+            $("#quantity-input-error").text("");
+        }
+
+        function updateAmounts() {
+            console.log("updateAmounts() llamada");
+            var subtotalAmount = 0;
+            var taxAmount = 0;
+            var cardFee = 0;
+            var totalAmount = 0;
+            $("#product-table tbody tr").each(function () {
+                var rowTotal = parseFloat($(this).find("td:eq(4)").text());
+                console.log("rowTotal:", rowTotal); // Verifica que cada fila esté aportando al subtotal
+                subtotalAmount += rowTotal;
+            });
+            taxAmount = Math.round(subtotalAmount * 0.13); // Redondear el impuesto a entero
+            cardFee = Math.round(subtotalAmount * 0.02); // Redondear la comisión por tarjeta a entero
+
+            console.log("subtotalAmount:", subtotalAmount);
+            console.log("taxAmount:", taxAmount);
+            console.log("cardFee:", cardFee);
+
+            $("#subtotal-amount").text(subtotalAmount.toFixed(2));
+            $("#tax-amount").text(taxAmount.toFixed(2));
+            if ($("#MetodoPago").val() === "Tarjeta") {
+                $("#card-amount").text(cardFee.toFixed(2));
+                totalAmount = subtotalAmount + taxAmount + cardFee;
+            } else {
+                $("#card-amount").text("0.00");
+                totalAmount = subtotalAmount + taxAmount;
+            }
+
+            totalAmount = Math.round(totalAmount); // Redondear el total a entero
+            console.log("totalAmount:", totalAmount);
+
+            $("#total-amount").text(totalAmount);
+            $('#subtotal-amount-input').val(Math.round(subtotalAmount)); // Redondear el subtotal a entero
+            $('#total-amount-input').val(totalAmount);
+        }
+
+
+        function getProductStock(productId, callback) {
+            if (productId) {
+                $.ajax({
+                    url: "/Pedidos/GetProductStock",
+                    type: "GET",
+                    data: { id: productId },
+                    success: function (result) {
+                        if (result.stock) {
+                            callback(result.stock);
+                        } else {
+                            callback(null);
+                        }
+                    },
+                    error: function () {
+                        callback(null);
+                    }
+                });
+            }
+        }
+
+        function getProductPrice(productId, callback) {
+            if (productId) {
+                $.ajax({
+                    url: "/Pedidos/GetProductPrice",
+                    type: "GET",
+                    data: { id: productId },
+                    success: function (result) {
+                        if (result.price) {
+                            callback(result.price);
+                        } else {
+                            callback(null);
+                        }
+                    },
+                    error: function () {
+                        callback(null);
+                    }
+                });
+            }
+        }
+    </script>
+}

@@ -1,0 +1,32 @@
+﻿@model PIV_PF_KendallBonillaMiranda.TiposProductos
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Product Type</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.TipoID)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.TipoID)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TipoNombre)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.TipoNombre)
+        </dd>
+    </dl>
+</div>
+
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.TipoID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

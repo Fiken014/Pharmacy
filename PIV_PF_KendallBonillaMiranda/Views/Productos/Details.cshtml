@@ -1,0 +1,68 @@
+﻿@model PIV_PF_KendallBonillaMiranda.Productos
+
+@{
+    ViewBag.Title = "Detalles del Producto";
+}
+
+<h2>Detalles del Producto</h2>
+
+<div>
+    <h4>Producto</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.ProductoID)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.ProductoID)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Nombre)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Nombre)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Descripcion)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Descripcion)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Precio)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Precio)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Stock)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Stock)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Estado)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Estado)
+        </dd>
+
+        <dt>
+            Tipo de Producto
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.TipoID)
+            @Html.DisplayFor(model => model.TiposProductos.TipoNombre)
+        </dd>
+    </dl>
+</div>
+
+<p>
+    @Html.ActionLink("Editar", "Edit", new { id = Model.ProductoID }, new { @class = "btn btn-warning" }) |
+    @Html.ActionLink("Volver a la lista", "Index", null, new { @class = "btn btn-default" })
+</p>
